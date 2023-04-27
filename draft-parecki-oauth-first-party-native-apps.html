@@ -1399,37 +1399,25 @@ server to indicate that further authentication of the user is required.<a href="
 following parameters using the `application/x-www-form-urlencoded
 format with a character encoding of UTF-8 in the HTTP request body:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-5.1-2">
-          <dt id="section-5.1-2.1">"login_hint":</dt>
+          <dt id="section-5.1-2.1">"client_id":</dt>
           <dd style="margin-left: 1.5em" id="section-5.1-2.2">
-            <p id="section-5.1-2.2.1"><span class="bcp14">OPTIONAL</span>. If the client has collected the user's username, email,
-phone number or other identifier, it can provide this in the request.<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-2.2.1"><span class="bcp14">REQUIRED</span> if the client is not authenticating with the
+authorization server.<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-5.1-2.3">"password":</dt>
+<dt id="section-5.1-2.3">"scope":</dt>
           <dd style="margin-left: 1.5em" id="section-5.1-2.4">
-            <p id="section-5.1-2.4.1"><span class="bcp14">OPTIONAL</span>. If the client has collected the user's password, it can provide
-it at this stage.<a href="#section-5.1-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-2.4.1"><span class="bcp14">OPTIONAL</span>. The OAuth scope defined in <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>.<a href="#section-5.1-2.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-5.1-2.5">"scope":</dt>
+<dt id="section-5.1-2.5">"acr_values":</dt>
           <dd style="margin-left: 1.5em" id="section-5.1-2.6">
-            <p id="section-5.1-2.6.1"><span class="bcp14">OPTIONAL</span>. The OAuth scope defined in <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>.<a href="#section-5.1-2.6.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-2.6.1"><span class="bcp14">OPTIONAL</span>. The acr_values requested by the client.<a href="#section-5.1-2.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-5.1-2.7">"acr_values":</dt>
+<dt id="section-5.1-2.7">"device_session":</dt>
           <dd style="margin-left: 1.5em" id="section-5.1-2.8">
-            <p id="section-5.1-2.8.1"><span class="bcp14">OPTIONAL</span>. The acr_values requested by the client.<a href="#section-5.1-2.8.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-5.1-2.9">"device_session":</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-2.10">
-            <p id="section-5.1-2.10.1"><span class="bcp14">OPTIONAL</span>. If the client has previously obtained a device session, described in <a href="#device-session" class="auto internal xref">Section 5.3</a>.<a href="#section-5.1-2.10.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-5.1-2.11">"client_id":</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-2.12">
-            <p id="section-5.1-2.12.1"><span class="bcp14">REQUIRED</span> if the client is not authenticating with the
-authorization server.<a href="#section-5.1-2.12.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-2.8.1"><span class="bcp14">OPTIONAL</span>. If the client has previously obtained a device session, described in <a href="#device-session" class="auto internal xref">Section 5.3</a>.<a href="#section-5.1-2.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -1440,10 +1428,10 @@ given the user's phone number, line breaks shown for illustration purposes only:
 <pre>
 POST /authorize HTTP/1.1
 Host: server.example.com
-Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 
 login_hint=%2B1-310-123-4567&amp;scope=profile
+&amp;client_id=bb16c14c73415
 </pre><a href="#section-5.1-5" class="pilcrow">¶</a>
 </div>
 </section>
