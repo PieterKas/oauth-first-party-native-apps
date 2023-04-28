@@ -5,10 +5,10 @@
 Web Authorization Protocol                                    A. Parecki
 Internet-Draft                                                      Okta
 Intended status: Standards Track                             G. Fletcher
-Expires: 29 October 2023                           Capital One Financial
+Expires: 30 October 2023                           Capital One Financial
                                                             P. Kasselman
                                                                Microsoft
-                                                           27 April 2023
+                                                           28 April 2023
 
 
              OAuth 2.0 for First-Party Native Applications
@@ -67,7 +67,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 October 2023.
+   This Internet-Draft will expire on 30 October 2023.
 
 Copyright Notice
 
@@ -102,12 +102,14 @@ Table of Contents
      5.3.  Device Session
    6.  Token Request
      6.1.  Token Endpoint Error Response
-   7.  Security Considerations
-     7.1.  First-Party Applications
-     7.2.  Phishing
-     7.3.  Client Authentication
-   8.  IANA Considerations
-   9.  Normative References
+   7.  Resource Server Error Response
+   8.  Security Considerations
+     8.1.  First-Party Applications
+     8.2.  Phishing
+     8.3.  Client Authentication
+     8.4.  Proof of Possession
+   9.  IANA Considerations
+   10. Normative References
    Acknowledgments
    Authors' Addresses
 
@@ -126,7 +128,8 @@ Table of Contents
       entity and the user understands them both as the same entity.
 
    *  MUST NOT be used by third party applications, SHOULD take measures
-      to prevent use by third party applications.
+      to prevent use by third party applications. (e.g. only enable for
+      certain client IDs, and take measures to authenticate your apps.)
 
    *  Designed for native applications, both mobile and desktop
       applications.
@@ -147,7 +150,7 @@ Table of Contents
       application by centralizing all aspects of logging in at the
       authorization server.
 
-   *  See Section 7.2 section below.
+   *  See Section 8.2 section below.
 
 2.  Conventions and Definitions
 
@@ -170,6 +173,10 @@ Table of Contents
 
 3.  Protocol Overview
 
+   Three entry points into the draft:
+
+   From scratch:
+
    1.  The client initiates the authorization by making a POST request
        to the authorization challenge endpoint, potentially with
        information collected from the user (e.g. password)
@@ -186,9 +193,17 @@ Table of Contents
    4.  The client exchanges the authorization code for an access token
        at the token endpoint
 
-   5.  When using a refresh token, the authorization server MAY respond
+   When sending a refresh token to the token endpoint:
+
+   1.  When using a refresh token, the authorization server MAY respond
        with an error to indicate that re-authorization of the user is
        required
+
+   When using an access token at the resource server:
+
+   1.  When making a resource request to a resource server, the resource
+       server MAY respond with an error according to OAuth 2.0 Step-Up
+       Authentication Challenge Protocol
 
 4.  Protocol Endpoints
 
@@ -317,6 +332,10 @@ Table of Contents
       Values for the error parameter MUST NOT include characters outside
       the set %x20-21 / %x23-5B / %x5D-7E.
 
+      TODO: The authorization server MAY extend these error codes with
+      custom messages based on the requirements of the authorization
+      server.
+
    "error_description":  OPTIONAL.  Human-readable ASCII [USASCII] text
       providing additional information, used to assist the client
       developer in understanding the error that occurred.  Values for
@@ -406,9 +425,21 @@ Table of Contents
      "device_session": "uY29tL2F1dGhlbnRpY"
    }
 
-7.  Security Considerations
+7.  Resource Server Error Response
 
-7.1.  First-Party Applications
+   Step-Up Authentication defines a mechanism for resource servers to
+   tell the client to start a new authorization request, including
+   acr_values and max_age, and scope from RFC6750.  Upon receiving this
+   request, the client starts a new authorization request according to
+   this specification, and includes the acr_values, max_age and scope
+   returned in the error response.
+
+   (No new things need to be defined by this specification in order to
+   use this.)
+
+8.  Security Considerations
+
+8.1.  First-Party Applications
 
    Because this specification enables a client application to interact
    directly with the end user, and the application handles sending any
@@ -420,7 +451,7 @@ Table of Contents
    belonging to the same brand as the authorization server.  For
    example, a bank publishing their own mobile application.
 
-7.2.  Phishing
+8.2.  Phishing
 
    There are two ways using this specification increases the risk of
    phishing.
@@ -444,7 +475,7 @@ Table of Contents
    require that the user go through a redirect-based flow at any stage
    of the process based on its own risk assessment.
 
-7.3.  Client Authentication
+8.3.  Client Authentication
 
    Typically, mobile and desktop applications are considered "public
    clients" in OAuth, since they cannot be shipped with a statically
@@ -462,11 +493,22 @@ Table of Contents
    client impersonation, such as using attestation APIs available from
    the operating system.
 
-8.  IANA Considerations
+8.4.  Proof of Possession
+
+   TODO: Describe how to add proof of possession into the various parts
+   of this flow.  Describe why, because things like device session could
+   otherwise be swapped in various types of attacks.
+
+   *  PoP binding of device session parameter
+
+   *  The client SHOULD use DPoP for every request, the AS SHOULD bind
+      any artifacts returned to the DPoP key
+
+9.  IANA Considerations
 
    This document has no IANA actions.
 
-9.  Normative References
+10.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
